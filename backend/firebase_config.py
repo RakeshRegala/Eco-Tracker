@@ -6,6 +6,7 @@ from functools import wraps
 from flask import request, jsonify
 
 # Load Service Account Certificate
+db = None
 if not firebase_admin._apps:
     try:
         # 1. Try to load credentials from environment variable dictionary (for Render/Production)
@@ -13,21 +14,29 @@ if not firebase_admin._apps:
         if creds_json:
             creds_dict = json.loads(creds_json)
             cred = credentials.Certificate(creds_dict)
+            firebase_admin.initialize_app(cred)
             print("Firebase Admin SDK initialized successfully via environment credentials.")
+            db = firestore.client()
         else:
             # 2. Fallback to local file path (for Local Development)
             current_dir = os.path.dirname(os.path.abspath(__file__))
             service_account_path = os.path.join(current_dir, 'serviceAccountKey.json')
-            cred = credentials.Certificate(service_account_path)
-            print("Firebase Admin SDK initialized successfully via local serviceAccountKey.json.")
-            
-        firebase_admin.initialize_app(cred)
+            if os.path.exists(service_account_path):
+                cred = credentials.Certificate(service_account_path)
+                firebase_admin.initialize_app(cred)
+                print("Firebase Admin SDK initialized successfully via local serviceAccountKey.json.")
+                db = firestore.client()
+            else:
+                print("Firebase credentials not found (no environment variable and no local serviceAccountKey.json). App will run in Demo/Offline mode.")
     except Exception as e:
         print(f"Error initializing Firebase Admin SDK: {e}")
-        # Initialize app default if both methods fail (rely on ADC)
-        firebase_admin.initialize_app()
-
-db = firestore.client()
+        try:
+            # Initialize app default if both methods fail (rely on ADC)
+            firebase_admin.initialize_app()
+            db = firestore.client()
+        except Exception as default_err:
+            print(f"Could not connect to Firestore or initialize default Firebase app: {default_err}. Firebase features will be disabled.")
+            db = None
 
 # In-memory Demo Session Database
 DEMO_DATABASE = {

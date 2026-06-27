@@ -15,8 +15,8 @@ from routes.carbon_interface import carbon_interface_bp
 def create_app():
     app = Flask(__name__)
     
-    # Configure CORS - Enable React frontend on port 5173 to access resources
-    CORS(app, resources={r"/api/*": {"origins": ["http://localhost:5173", "http://127.0.0.1:5173"]}})
+    # Configure CORS - Enable React frontend on port 5173 and production URLs to access resources
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
     
     # Register Blueprints
     app.register_blueprint(calculator_bp)
