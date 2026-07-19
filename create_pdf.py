@@ -123,7 +123,7 @@ class EcoTrackPDF(FPDF):
         self.set_fill_color(52, 211, 153) # Emerald-400
         self.rect(75, self.get_y(), 60, 1.5, "F")
         
-        self.set_y(210)
+        self.set_y(180)
         self.set_font("Helvetica", "B", 12)
         self.set_text_color(255, 255, 255)
         self.cell(0, 6, "Technology Stack:", border=0, new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
@@ -132,7 +132,15 @@ class EcoTrackPDF(FPDF):
         self.cell(0, 6, "React.js (Vite + Tailwind CSS + Chart.js) | Flask Python Web Server", border=0, new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
         self.cell(0, 6, "Firebase Firestore & Auth | Groq LLM API (llama-3.3-70b-versatile)", border=0, new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
         
-        self.ln(15)
+        self.ln(10)
+        self.set_font("Helvetica", "B", 10)
+        self.set_text_color(255, 255, 255)
+        self.cell(0, 5, "Date: 16 June 2026 | Team ID: ", border=0, new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
+        self.set_font("Helvetica", "", 9.5)
+        self.set_text_color(209, 250, 229) # Emerald-100
+        self.cell(0, 5, "Team Members: Regala Rakesh, Sri Dhruthi Mallela, P L P D Sravanthi Murukuri, Manikanta Cherukuri, Thokala Charan", border=0, new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
+
+        self.ln(5)
         self.set_font("Helvetica", "I", 9.5)
         self.set_text_color(167, 243, 208) # Emerald-200
         self.cell(0, 6, "Reference Document: Enterprise Blueprint and AI Custom Integration Guide", border=0, new_x=XPos.LMARGIN, new_y=YPos.NEXT, align="C")
@@ -933,6 +941,8 @@ def generate_pdf():
     # Save the output PDF
     output_path = r"c:\Users\regal\.gemini\antigravity-ide\scratch\ecotrack\EcoTrack_Documentation.pdf"
     pdf.output(output_path)
+    import shutil
+    shutil.copyfile(output_path, r"c:\Users\regal\.gemini\antigravity-ide\scratch\ecotrack\EcoTrackDocumentation.pdf")
     print(f"Success: Extended Documentation generated at {output_path}")
 
 if __name__ == "__main__":
